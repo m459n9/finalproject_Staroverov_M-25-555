@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "finalproject-staroverov-m-25-555"
+version = "0.1.1"
+description = "ValutaTrade Hub CLI app"
+authors = ["Maksim Staroverov <mstaroverov6@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "valutatrade_hub" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+prettytable = "^3.10.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.6.0"
+
+[tool.poetry.scripts]
+project = "valutatrade_hub.cli.interface:main"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
