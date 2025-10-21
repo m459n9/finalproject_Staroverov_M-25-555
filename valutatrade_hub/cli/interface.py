@@ -6,14 +6,13 @@ from decimal import Decimal
 from prettytable import PrettyTable
 
 from valutatrade_hub.core.usecases import (
-    register_user,
-    login_user,
-    show_portfolio,
-    buy_currency,
-    sell_currency,
-    get_rate,
-    InsufficientFundsError,
+    register_user, login_user, show_portfolio,
+    buy_currency, sell_currency, get_rate, update_rates_stub
 )
+from valutatrade_hub.core.exceptions import (
+    ValidationError, InsufficientFundsError, NotLoggedInError, CurrencyNotFoundError, ApiRequestError
+)
+from valutatrade_hub.core.currencies import list_currencies
 
 def _print_portfolio(model: dict):
     username = model["username"]
@@ -30,11 +29,8 @@ def _print_portfolio(model: dict):
     print("-" * 33)
     print(f"ИТОГО: {Decimal(total):,.2f} {base}".replace(",", " "))
 
-def _ok(msg: str):
-    print(msg)
-
-def _err(msg: str):
-    print(msg)
+def _ok(msg: str): print(msg)
+def _err(msg: str): print(msg)
 
 def main():
     parser = argparse.ArgumentParser(prog="ValutaTrade Hub CLI", description="Консольный интерфейс управления портфелем")
@@ -51,7 +47,7 @@ def main():
     p_show = sub.add_parser("show-portfolio", help="Показать портфель")
     p_show.add_argument("--base", default="USD")
 
-    p_buy = sub.add_parser("buy", help="Купить валюту (количество в штуках, не в долларах)")
+    p_buy = sub.add_parser("buy", help="Купить валюту (количество в штуках)")
     p_buy.add_argument("--currency", required=True)
     p_buy.add_argument("--amount", type=float, required=True)
 
@@ -62,6 +58,9 @@ def main():
     p_rate = sub.add_parser("get-rate", help="Получить курс одной валюты к другой")
     p_rate.add_argument("--from", dest="frm", required=True)
     p_rate.add_argument("--to", dest="to", required=True)
+
+    sub.add_parser("list-currencies", help="Показать реестр валют")
+    sub.add_parser("update-rates", help="(DEV) Освежить timestamps в rates.json")
 
     args = parser.parse_args()
 
@@ -79,48 +78,61 @@ def main():
             _print_portfolio(model)
 
         elif args.command == "buy":
-            result = buy_currency(args.currency, args.amount, base="USD")
+            r = buy_currency(args.currency, args.amount, base="USD")
+            ch = r["portfolio_changes"]
             _ok(
                 "Покупка выполнена: "
-                f"{Decimal(result['amount']):f} {result['currency']} "
-                f"по курсу {result['rate_used']} USD/{result['currency']}\n"
+                f"{Decimal(r['amount']):f} {r['currency']} по курсу {r['rate_used']} {r['base']}/{r['currency']}\n"
                 f"Изменения в портфеле:\n"
-                f"- {result['currency']}: было {result['before']} → стало {result['after']}\n"
-                f"Оценочная стоимость покупки: {result['estimated_cost_in_base']} {result['base']}"
+                f"- {r['currency']}: было {ch[r['currency']]['before']} → стало {ch[r['currency']]['after']}\n"
+                f"- {r['base']}: было {ch[r['base']]['before']} → стало {ch[r['base']]['after']}\n"
+                f"Списано: {r['estimated_cost_in_base']} {r['base']}"
             )
 
         elif args.command == "sell":
-            result = sell_currency(args.currency, args.amount, base="USD")
+            r = sell_currency(args.currency, args.amount, base="USD")
+            ch = r["portfolio_changes"]
             _ok(
                 "Продажа выполнена: "
-                f"{Decimal(result['amount']):f} {result['currency']} "
-                f"по курсу {result['rate_used']} USD/{result['currency']}\n"
+                f"{Decimal(r['amount']):f} {r['currency']} по курсу {r['rate_used']} {r['base']}/{r['currency']}\n"
                 f"Изменения в портфеле:\n"
-                f"- {result['currency']}: было {result['before']} → стало {result['after']}\n"
-                f"Оценочная выручка: {result['estimated_revenue_in_base']} {result['base']}"
+                f"- {r['currency']}: было {ch[r['currency']]['before']} → стало {ch[r['currency']]['after']}\n"
+                f"- {r['base']}: было {ch[r['base']]['before']} → стало {ch[r['base']]['after']}\n"
+                f"Зачислено: {r['estimated_revenue_in_base']} {r['base']}"
             )
 
         elif args.command == "get-rate":
             r = get_rate(args.frm, args.to)
-            _ok(
-                f"Курс {r['from']}→{r['to']}: {r['rate']} (обновлено: {r['updated_at']})\n"
-                f"Обратный курс {r['to']}→{r['from']}: {r['inverse']}"
-            )
+            _ok(f"Курс {r['from']}→{r['to']}: {r['rate']} (обновлено: {r['updated_at']})\nОбратный курс {r['to']}→{r['from']}: {r['inverse']}")
 
+        elif args.command == "list-currencies":
+            t = PrettyTable()
+            t.field_names = ["Code", "Info"]
+            for c in list_currencies():
+                t.add_row([c.code, c.get_display_info()])
+            _ok(str(t))
+
+        elif args.command == "update-rates":
+            r = update_rates_stub()
+            _ok(f"Курсы обновлены (DEV). Обновлено пар: {r['updated']}, last_refresh: {r['last_refresh']}")
+
+    except NotLoggedInError as e:
+        _err(str(e))
     except InsufficientFundsError as e:
         _err(str(e))
-    except PermissionError:
-        _err("Сначала выполните login")
-    except ValueError as e:
-        msg = str(e)
-        if "уже занято" in msg:
-            _err(msg)  # Username занят
-        elif "Пароль" in msg:
-            _err("Пароль должен быть не короче 4 символов")
-        elif "не найден" in msg:
-            _err(msg)
-        else:
-            _err(msg)
+
+    except CurrencyNotFoundError as e:
+        _err(str(e))
+        _err("Подсказка: проверьте код валюты. Посмотреть поддерживаемые коды: `project list-currencies`.")
+        _err("Также можно получить помощь: `project get-rate --help`.")
+
+    except ApiRequestError as e:
+        _err(str(e))
+        _err("Попробуйте повторить позже или проверьте подключение к сети.")
+
+    except ValidationError as e:
+        _err(str(e))
+
     except Exception as e:
         _err(f"Неожиданная ошибка: {e}")
 

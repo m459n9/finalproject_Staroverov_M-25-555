@@ -1,0 +1,93 @@
+2025-10-21 18:15:52 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:15:53 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:15:53 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:15:53 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:15:54 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:15:54 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:15:54 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:15:54 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:30 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:30 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:30 | INFO | valutatrade_hub | START update_rates_stub args=[] kwargs={}
+2025-10-21 18:17:30 | INFO | valutatrade_hub | END   update_rates_stub ok=1 time=0.001s
+2025-10-21 18:17:30 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:30 | INFO | valutatrade_hub | START register args=('1234',) kwargs={}
+2025-10-21 18:17:30 | ERROR | valutatrade_hub | END   register ok=0 time=0.000s err=Имя пользователя 'alice' уже занято
+Traceback (most recent call last):
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/decorators.py", line 18, in inner
+    result = fn(*args, **kwargs)
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/core/usecases.py", line 94, in register_user
+    raise UserAlreadyExistsError(f"Имя пользователя '{username}' уже занято")
+valutatrade_hub.core.exceptions.UserAlreadyExistsError: Имя пользователя 'alice' уже занято
+2025-10-21 18:17:31 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:31 | INFO | valutatrade_hub | START login args=('1234',) kwargs={}
+2025-10-21 18:17:31 | INFO | valutatrade_hub | END   login ok=1 time=0.000s
+2025-10-21 18:17:31 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:31 | INFO | valutatrade_hub | START buy args=(0.01,) kwargs={'base': 'USD'}
+2025-10-21 18:17:31 | ERROR | valutatrade_hub | END   buy ok=0 time=0.001s err=Недостаточно средств: доступно 0.00 USD, требуется 593.3721
+Traceback (most recent call last):
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/decorators.py", line 18, in inner
+    result = fn(*args, **kwargs)
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/core/usecases.py", line 185, in buy_currency
+    raise InsufficientFundsError(
+        f"Недостаточно средств: доступно {usd.balance} {base}, требуется {cost}"
+    )
+valutatrade_hub.core.models.InsufficientFundsError: Недостаточно средств: доступно 0.00 USD, требуется 593.3721
+2025-10-21 18:17:31 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:31 | INFO | valutatrade_hub | START show_portfolio args=[] kwargs={'base': 'USD'}
+2025-10-21 18:17:31 | INFO | valutatrade_hub | END   show_portfolio ok=1 time=0.000s
+2025-10-21 18:17:32 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:32 | INFO | valutatrade_hub | START sell args=(0.005,) kwargs={'base': 'USD'}
+2025-10-21 18:17:32 | INFO | valutatrade_hub | END   sell ok=1 time=0.001s
+2025-10-21 18:17:32 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:17:32 | INFO | valutatrade_hub | START get_rate args=('USD',) kwargs={}
+2025-10-21 18:17:32 | INFO | valutatrade_hub | END   get_rate ok=1 time=0.000s
+2025-10-21 18:33:38 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:33:49 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:33:49 | INFO | valutatrade_hub | START register args=('1234',) kwargs={}
+2025-10-21 18:33:49 | ERROR | valutatrade_hub | END   register ok=0 time=0.001s err=Имя пользователя 'alice' уже занято
+Traceback (most recent call last):
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/decorators.py", line 18, in inner
+    result = fn(*args, **kwargs)
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/core/usecases.py", line 121, in register_user
+    raise UserAlreadyExistsError(f"Имя пользователя '{username}' уже занято")
+valutatrade_hub.core.exceptions.UserAlreadyExistsError: Имя пользователя 'alice' уже занято
+2025-10-21 18:33:49 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:33:49 | INFO | valutatrade_hub | START login args=('1234',) kwargs={}
+2025-10-21 18:33:49 | INFO | valutatrade_hub | END   login ok=1 time=0.000s
+2025-10-21 18:33:50 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:33:50 | INFO | valutatrade_hub | START show_portfolio args=[] kwargs={'base': 'USD'}
+2025-10-21 18:33:50 | INFO | valutatrade_hub | END   show_portfolio ok=1 time=0.001s
+2025-10-21 18:33:50 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:33:50 | INFO | valutatrade_hub | START get_rate args=('USD',) kwargs={}
+2025-10-21 18:33:50 | ERROR | valutatrade_hub | END   get_rate ok=0 time=0.000s err=Ошибка при обращении к внешнему API: пара BTC->USD недоступна (Parser Service не подключён)
+Traceback (most recent call last):
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/core/usecases.py", line 75, in _get_rate_with_fallback
+    return _get_rate_from_cache(frm, to)
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/core/usecases.py", line 63, in _get_rate_from_cache
+    raise CurrencyNotFoundError(f"Неизвестная валюта '{frm}'")
+valutatrade_hub.core.exceptions.CurrencyNotFoundError: Неизвестная валюта 'BTC'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/decorators.py", line 18, in inner
+    result = fn(*args, **kwargs)
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/core/usecases.py", line 292, in get_rate
+    r, upd = _get_rate_with_fallback(frm, to)
+             ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/core/usecases.py", line 77, in _get_rate_with_fallback
+    return _get_rate_via_external_api(frm, to)
+  File "/Users/m459n9/finalproject_Staroverov_M-25-555/valutatrade_hub/core/usecases.py", line 67, in _get_rate_via_external_api
+    raise ApiRequestError(f"Ошибка при обращении к внешнему API: пара {frm}->{to} недоступна (Parser Service не подключён)")
+valutatrade_hub.core.exceptions.ApiRequestError: Ошибка при обращении к внешнему API: пара BTC->USD недоступна (Parser Service не подключён)
+2025-10-21 18:40:50 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:01 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:07 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:13 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:20 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:30 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:41 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:46 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:51 | INFO | valutatrade_hub | Logging initialized
+2025-10-21 18:41:59 | INFO | valutatrade_hub | Logging initialized

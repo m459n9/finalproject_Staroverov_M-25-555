@@ -217,8 +217,11 @@ class Wallet:
         if dec <= 0:
             raise ValueError("'amount' должен быть положительным числом")
         if dec > self._balance:
+            available = self._balance
+            code = self._currency_code
+            required = dec
             raise InsufficientFundsError(
-                f"Недостаточно средств: доступно {self._balance} {self._currency_code}, требуется {dec}"
+                f"ыНедостаточно средств: доступно {available} {code}, требуется {required} {code}"
             )
         self.balance = self._balance - dec
 
