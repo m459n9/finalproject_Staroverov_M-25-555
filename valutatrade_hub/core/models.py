@@ -88,7 +88,7 @@ class User:
         registration_date: datetime,
     ) -> None:
         self._user_id: int = int(user_id)
-        self.username = username  # через property, валидирует
+        self.username = username  
         self._hashed_password: str = str(hashed_password)
         self._salt: str = str(salt)
         if not isinstance(registration_date, datetime):

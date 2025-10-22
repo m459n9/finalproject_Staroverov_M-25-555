@@ -6,7 +6,7 @@ from decimal import Decimal
 from typing import Tuple
 
 from .exceptions import ValidationError, CurrencyNotFoundError
-from .currencies import get_currency, is_known_code
+from .currencies import is_known_code
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds")

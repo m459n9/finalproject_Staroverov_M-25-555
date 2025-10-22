@@ -7,3 +7,42 @@
 2025-10-21 18:41:46 | INFO | vth.actions | BUY user='' currency='' amount= base='USD' rate=59337.21 result=OK changes=[BTC: 0.04000000→0.04300000; USD: 593.38→415.37] time=0.001s
 2025-10-21 18:41:51 | INFO | vth.actions | GET_RATE user='' currency='' amount= rate=59337.21 result=OK time=0.000s
 2025-10-21 18:41:59 | INFO | vth.actions | GET_RATE user='' currency='' amount= rate=59337.21 result=OK time=0.000s
+2025-10-22 18:16:58 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Ошибка при обращении к внешнему API: пара BTC->USD недоступна (Parser Service не подключён)' time=0.000s
+2025-10-22 18:17:06 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Ошибка при обращении к внешнему API: пара BTC->USD недоступна (Parser Service не подключён)' time=0.000s
+2025-10-22 18:18:45 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Ошибка при обращении к внешнему API: пара BTC->USD недоступна (Parser Service не подключён)' time=0.000s
+2025-10-22 18:21:20 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:26:14 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:26:25 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:26:34 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:26:54 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:35:00 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:46:44 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:47:19 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:49:04 | ERROR | vth.actions | GET_RATE result=ERROR type=ApiRequestError msg='Курс BTC в USD недоступен в локальном кеше. Выполните 'update-rates' и повторите.' time=0.000s
+2025-10-22 18:54:09 | INFO | vth.actions | GET_RATE user='' currency='' amount= rate=108593.0 result=OK time=0.000s
+2025-10-22 18:56:23 | INFO | vth.actions | GET_RATE user='' currency='' amount= rate=108449.0 result=OK time=0.000s
+2025-10-22 18:57:57 | INFO | vth.actions | GET_RATE user='' currency='' amount= rate=108483.0 result=OK time=0.000s
+2025-10-22 18:58:03 | INFO | vth.actions | GET_RATE user='' currency='' amount= rate=0.000009218034162034604500244277905 result=OK time=0.000s
+2025-10-22 18:59:06 | INFO | vth.actions | REGISTER user='' currency='' amount= result=OK time=0.001s
+2025-10-22 18:59:15 | INFO | vth.actions | LOGIN user='' currency='' amount= result=OK time=0.000s
+2025-10-22 18:59:32 | ERROR | vth.actions | BUY result=ERROR type=InsufficientFundsError msg='Недостаточно средств: доступно 0.00 USD, требуется 1084.830 USD' time=0.001s
+2025-10-22 19:00:24 | INFO | vth.actions | BUY user='' currency='' amount= base='USD' rate=108483.0 result=OK changes=[BTC: 0E-8→0.01000000; USD: 10000.00→8915.17] time=0.001s
+2025-10-22 19:00:33 | INFO | vth.actions | SELL user='' currency='' amount= base='USD' rate=108483.0 result=OK changes=[BTC: 0.01000000→0.00500000; USD: 8915.17→9457.59] time=0.001s
+2025-10-22 19:00:41 | ERROR | vth.actions | BUY result=ERROR type=InsufficientFundsError msg='Недостаточно средств: доступно 9457.59 USD, требуется 1084829891517.00 USD' time=0.000s
+2025-10-22 19:23:23 | ERROR | vth.actions | REGISTER result=ERROR type=UserAlreadyExistsError msg='Имя пользователя 'alice' уже занято' time=0.000s
+2025-10-22 19:23:35 | INFO | vth.actions | REGISTER user='' currency='' amount= result=OK time=0.002s
+2025-10-22 19:23:51 | ERROR | vth.actions | LOGIN result=ERROR type=ValidationError msg='Неверный пароль' time=0.000s
+2025-10-22 19:23:53 | INFO | vth.actions | LOGIN user='' currency='' amount= result=OK time=0.000s
+2025-10-22 19:23:59 | INFO | vth.actions | SHOW_PORTFOLIO user='' currency='' amount= base='USD' result=OK time=0.000s
+2025-10-22 19:40:11 | INFO | vth.actions | REGISTER user='' currency='' amount= result=OK time=0.001s
+2025-10-22 19:40:17 | INFO | vth.actions | LOGIN user='' currency='' amount= result=OK time=0.000s
+2025-10-22 19:40:22 | INFO | vth.actions | SHOW_PORTFOLIO user='' currency='' amount= base='USD' result=OK time=0.002s
+2025-10-22 19:40:52 | INFO | vth.actions | REGISTER user='' currency='' amount= result=OK time=0.001s
+2025-10-22 19:41:19 | INFO | vth.actions | LOGIN user='' currency='' amount= result=OK time=0.000s
+2025-10-22 19:41:23 | INFO | vth.actions | SHOW_PORTFOLIO user='' currency='' amount= base='USD' result=OK time=0.000s
+2025-10-22 19:43:04 | INFO | vth.actions | GET_RATE user='' currency='' amount= rate=108543.0 result=OK time=0.000s
+2025-10-22 19:43:13 | INFO | vth.actions | SELL user='' currency='' amount= base='USD' rate=108543.0 result=OK changes=[BTC: 0.00500000→0.00400000; USD: 9457.59→9566.13] time=0.003s
+2025-10-22 19:43:18 | INFO | vth.actions | BUY user='' currency='' amount= base='USD' rate=108543.0 result=OK changes=[BTC: 0.00400000→0.00500000; USD: 9566.13→9457.59] time=0.001s
+2025-10-22 19:43:23 | INFO | vth.actions | SELL user='' currency='' amount= base='USD' rate=108543.0 result=OK changes=[BTC: 0.00500000→0.00450000; USD: 9457.59→9511.86] time=0.001s
+2025-10-22 19:43:27 | INFO | vth.actions | SHOW_PORTFOLIO user='' currency='' amount= base='USD' result=OK time=0.000s
+2025-10-22 19:43:41 | ERROR | vth.actions | GET_RATE result=ERROR type=CurrencyNotFoundError msg='Неизвестная валюта 'ABC'' time=0.000s

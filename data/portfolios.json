@@ -9,5 +9,20 @@
         "balance": "415.37"
       }
     }
+  },
+  {
+    "user_id": 2,
+    "wallets": {
+      "USD": {
+        "balance": "9511.86"
+      },
+      "BTC": {
+        "balance": "0.00450000"
+      }
+    }
+  },
+  {
+    "user_id": 3,
+    "wallets": {}
   }
 ]

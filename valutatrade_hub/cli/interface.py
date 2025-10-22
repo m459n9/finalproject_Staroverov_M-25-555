@@ -6,13 +6,17 @@ from decimal import Decimal
 from prettytable import PrettyTable
 
 from valutatrade_hub.core.usecases import (
-    register_user, login_user, show_portfolio,
-    buy_currency, sell_currency, get_rate, update_rates_stub
+    register_user,
+    login_user,
+    show_portfolio,
+    buy_currency,
+    sell_currency,
+    get_rate,
+    InsufficientFundsError,
 )
-from valutatrade_hub.core.exceptions import (
-    ValidationError, InsufficientFundsError, NotLoggedInError, CurrencyNotFoundError, ApiRequestError
-)
-from valutatrade_hub.core.currencies import list_currencies
+# ⬇️ ДОБАВЬ этот импорт, чтобы использовать правильный апдейтер
+from valutatrade_hub.parser_service.updater import RatesUpdater
+from valutatrade_hub.core.exceptions import ApiRequestError, CurrencyNotFoundError
 
 def _print_portfolio(model: dict):
     username = model["username"]
@@ -47,7 +51,7 @@ def main():
     p_show = sub.add_parser("show-portfolio", help="Показать портфель")
     p_show.add_argument("--base", default="USD")
 
-    p_buy = sub.add_parser("buy", help="Купить валюту (количество в штуках)")
+    p_buy = sub.add_parser("buy", help="Купить валюту (количество в штуках, не в долларах)")
     p_buy.add_argument("--currency", required=True)
     p_buy.add_argument("--amount", type=float, required=True)
 
@@ -59,8 +63,15 @@ def main():
     p_rate.add_argument("--from", dest="frm", required=True)
     p_rate.add_argument("--to", dest="to", required=True)
 
-    sub.add_parser("list-currencies", help="Показать реестр валют")
-    sub.add_parser("update-rates", help="(DEV) Освежить timestamps в rates.json")
+    # ⬇️ Команда обновления курсов парсера
+    p_update = sub.add_parser("update-rates", help="Запустить обновление курсов (parser service)")
+    p_update.add_argument("--source", choices=["coingecko", "exchangerate"], help="Ограничить источником")
+
+    # ⬇️ Показ кэша курсов (улучшенная версия get-rate)
+    p_showrates = sub.add_parser("show-rates", help="Показать курсы из локального кэша")
+    p_showrates.add_argument("--currency", help="Фильтр по коду валюты (например, BTC)")
+    p_showrates.add_argument("--top", type=int, help="Показать N самых дорогих криптовалют")
+    p_showrates.add_argument("--base", help="Базовая валюта отображения (по умолчанию USD)")
 
     args = parser.parse_args()
 
@@ -78,61 +89,108 @@ def main():
             _print_portfolio(model)
 
         elif args.command == "buy":
-            r = buy_currency(args.currency, args.amount, base="USD")
-            ch = r["portfolio_changes"]
+            result = buy_currency(args.currency, args.amount, base="USD")
+            ch = result["portfolio_changes"]
             _ok(
                 "Покупка выполнена: "
-                f"{Decimal(r['amount']):f} {r['currency']} по курсу {r['rate_used']} {r['base']}/{r['currency']}\n"
+                f"{Decimal(result['amount']):f} {result['currency']} "
+                f"по курсу {result['rate_used']} USD/{result['currency']}\n"
                 f"Изменения в портфеле:\n"
-                f"- {r['currency']}: было {ch[r['currency']]['before']} → стало {ch[r['currency']]['after']}\n"
-                f"- {r['base']}: было {ch[r['base']]['before']} → стало {ch[r['base']]['after']}\n"
-                f"Списано: {r['estimated_cost_in_base']} {r['base']}"
+                f"- {result['currency']}: было {ch[args.currency]['before']} → стало {ch[args.currency]['after']}\n"
+                f"- USD: было {ch['USD']['before']} → стало {ch['USD']['after']}\n"
+                f"Оценочная стоимость покупки: {result['estimated_cost_in_base']} {result['base']}"
             )
 
         elif args.command == "sell":
-            r = sell_currency(args.currency, args.amount, base="USD")
-            ch = r["portfolio_changes"]
+            result = sell_currency(args.currency, args.amount, base="USD")
+            ch = result["portfolio_changes"]
             _ok(
                 "Продажа выполнена: "
-                f"{Decimal(r['amount']):f} {r['currency']} по курсу {r['rate_used']} {r['base']}/{r['currency']}\n"
+                f"{Decimal(result['amount']):f} {result['currency']} "
+                f"по курсу {result['rate_used']} USD/{result['currency']}\n"
                 f"Изменения в портфеле:\n"
-                f"- {r['currency']}: было {ch[r['currency']]['before']} → стало {ch[r['currency']]['after']}\n"
-                f"- {r['base']}: было {ch[r['base']]['before']} → стало {ch[r['base']]['after']}\n"
-                f"Зачислено: {r['estimated_revenue_in_base']} {r['base']}"
+                f"- {result['currency']}: было {ch[args.currency]['before']} → стало {ch[args.currency]['after']}\n"
+                f"- USD: было {ch['USD']['before']} → стало {ch['USD']['after']}\n"
+                f"Зачислено: {result['estimated_revenue_in_base']} {result['base']}"
             )
 
         elif args.command == "get-rate":
             r = get_rate(args.frm, args.to)
-            _ok(f"Курс {r['from']}→{r['to']}: {r['rate']} (обновлено: {r['updated_at']})\nОбратный курс {r['to']}→{r['from']}: {r['inverse']}")
-
-        elif args.command == "list-currencies":
-            t = PrettyTable()
-            t.field_names = ["Code", "Info"]
-            for c in list_currencies():
-                t.add_row([c.code, c.get_display_info()])
-            _ok(str(t))
+            _ok(
+                f"Курс {r['from']}→{r['to']}: {r['rate']} (обновлено: {r['updated_at']})\n"
+                f"Обратный курс {r['to']}→{r['from']}: {r['inverse']}"
+            )
 
         elif args.command == "update-rates":
-            r = update_rates_stub()
-            _ok(f"Курсы обновлены (DEV). Обновлено пар: {r['updated']}, last_refresh: {r['last_refresh']}")
+            updater = RatesUpdater()  # ⬅️ больше НЕ передаём clients=...
+            res = updater.run_update(only=args.source)
+            # res — обычный dict; аккуратно печатаем статус
+            ok_sources = res.get("ok_sources", 0)
+            errors = res.get("errors", [])
+            pairs_count = res.get("pairs_count", 0)
+            last_refresh = res.get("last_refresh", "-")
+            if errors:
+                _ok(f"Update completed with errors. Sources OK: {ok_sources}, pairs: {pairs_count}. Last refresh: {last_refresh}")
+                for e in errors:
+                    print(f"- {e}")
+            else:
+                _ok(f"Update success. Pairs={pairs_count} ok={ok_sources} errors=0 Last refresh: {last_refresh}")
 
-    except NotLoggedInError as e:
-        _err(str(e))
+        elif args.command == "show-rates":
+            # лёгкая реализация поверх локального кэша из usecases.get_rate не нужна;
+            # читаем файл через RatesUpdater.CONFIG
+            from valutatrade_hub.parser_service.config import CONFIG
+            import json
+            import os
+            path = CONFIG.RATES_FILE_PATH
+            if not os.path.exists(path):
+                _err("Локальный кеш курсов пуст. Выполните 'update-rates', чтобы загрузить данные.")
+                return
+            with open(path, "r", encoding="utf-8") as f:
+                payload = json.load(f) or {}
+            pairs = payload.get("pairs", {})
+            if not pairs:
+                _err("Локальный кеш курсов пуст. Выполните 'update-rates', чтобы загрузить данные.")
+                return
+
+            rows = []
+            flt = (args.currency or "").strip().upper()
+            for k, v in pairs.items():
+                if flt and not k.startswith(flt + "_"):
+                    continue
+                rows.append((k, v.get("rate"), v.get("updated_at"), v.get("source")))
+            if not rows:
+                _err(f"Курс для '{flt}' не найден в кеше.")
+                return
+
+            rows.sort(key=lambda r: r[0])
+            tbl = PrettyTable()
+            tbl.field_names = ["PAIR", "RATE", "UPDATED_AT", "SOURCE"]
+            for r in rows:
+                tbl.add_row(r)
+            print(f"Rates from cache (updated at {payload.get('last_refresh','-')}):")
+            print(tbl)
+
     except InsufficientFundsError as e:
         _err(str(e))
-
     except CurrencyNotFoundError as e:
         _err(str(e))
-        _err("Подсказка: проверьте код валюты. Посмотреть поддерживаемые коды: `project list-currencies`.")
-        _err("Также можно получить помощь: `project get-rate --help`.")
-
+        _ok("Подсказка: используйте 'show-rates' или 'update-rates', чтобы увидеть поддерживаемые коды.")
     except ApiRequestError as e:
         _err(str(e))
-        _err("Попробуйте повторить позже или проверьте подключение к сети.")
-
-    except ValidationError as e:
-        _err(str(e))
-
+        _ok("Попробуйте позже или проверьте сеть/ключ EXCHANGERATE_API_KEY.")
+    except PermissionError:
+        _err("Сначала выполните login")
+    except ValueError as e:
+        msg = str(e)
+        if "уже занято" in msg:
+            _err(msg)
+        elif "Пароль" in msg:
+            _err("Пароль должен быть не короче 4 символов")
+        elif "не найден" in msg:
+            _err(msg)
+        else:
+            _err(msg)
     except Exception as e:
         _err(f"Неожиданная ошибка: {e}")
 

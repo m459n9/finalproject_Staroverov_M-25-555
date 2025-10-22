@@ -30,9 +30,8 @@ def _make_formatter(fmt_kind: str):
 def setup_logging() -> logging.Logger:
     """
     Инициализирует:
-      - app-логгер: valutatrade_hub -> logs/valutatrade_hub.log
-      - actions-логгер: vth.actions -> logs/actions.log
-    Строковый формат по умолчанию, уровень INFO (из настроек).
+      - app-логгер: valutatrade_hub в logs/valutatrade_hub.log
+      - actions-логгер: vth.actions в logs/actions.log
     """
     settings = SettingsLoader()
     os.makedirs(settings.logs_dir, exist_ok=True)

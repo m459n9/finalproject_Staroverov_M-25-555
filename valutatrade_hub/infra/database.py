@@ -10,7 +10,7 @@ from typing import Any
 from .settings import SettingsLoader
 
 class DatabaseManager:
-    """Singleton менеджер файловой БД."""
+    """Singleton менеджер файловой БД"""
     _instance: "DatabaseManager" = None  
 
     def __new__(cls, *args, **kwargs):

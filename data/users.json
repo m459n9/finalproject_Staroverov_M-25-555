@@ -2,8 +2,15 @@
   {
     "user_id": 1,
     "username": "alice",
-    "hashed_password": "0aae720ad8e566ecb8764e77c376776279a0c737dbbc8d686faef7cf7a4e5a09",
-    "salt": "7b87a470728ba664",
-    "registration_date": "2025-10-21T14:43:13"
+    "hashed_password": "de3ef059d58ea81c33ea016b0ae767b8ea99c4d8aa2c59d76ae9a5bcb1e9fdfd",
+    "salt": "ac6cde8656506129",
+    "registration_date": "2025-10-22T16:40:11"
+  },
+  {
+    "user_id": 2,
+    "username": "maksim",
+    "hashed_password": "5b288b172f5a954e641f4360bb8a6f1c27ee0c3a0ac5ce9c64bda2967695f0e7",
+    "salt": "4777a3a8fd61126b",
+    "registration_date": "2025-10-22T16:40:52"
   }
 ]

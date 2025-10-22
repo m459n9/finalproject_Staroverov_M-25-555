@@ -4,7 +4,7 @@ from __future__ import annotations
 import functools
 import logging
 from time import perf_counter
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 actions_logger = logging.getLogger("vth.actions")
 
@@ -15,7 +15,7 @@ def log_action(action: str, verbose: bool = False):
       INFO 2025-10-09T12:05:22 BUY user='alice' currency='BTC' amount=0.0500 rate=59300.00 base='USD' result=OK
     При исключении: result=ERROR type=... msg=...
 
-    verbose=True: добавляет контекст (before/after из result['portfolio_changes'] если есть).
+    verbose=True: добавляет контекст (before/after из result['portfolio_changes'] если есть)
     """
     def _wrap(fn: Callable[..., Any]):
         @functools.wraps(fn)
@@ -32,14 +32,15 @@ def log_action(action: str, verbose: bool = False):
                 if isinstance(res, dict):
                     base = res.get("base")
                     rate = res.get("rate_used") or res.get("rate")
-                    if base: line += f" base='{base}'"
-                    if rate: line += f" rate={rate}"
+                    if base: 
+                        line += f" base='{base}'"
+                    if rate: 
+                        line += f" rate={rate}"
                 line += " result=OK"
 
                 if verbose and isinstance(res, dict):
                     ch = res.get("portfolio_changes")
                     if isinstance(ch, dict):
-                        # добавим в лог ключевые изменения
                         parts = []
                         for k, v in ch.items():
                             parts.append(f"{k}: {v.get('before')}→{v.get('after')}")
