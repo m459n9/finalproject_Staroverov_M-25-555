@@ -54,3 +54,19 @@ valutatrade_hub/
 │   ├── valutatrade_hub.log
 │   ├── actions.log
 ```
+
+## Установка и запуск
+
+```bash
+# Клонирование репозитория
+git clone https://github.com/<your_username>/valutatrade-hub.git
+cd valutatrade-hub
+
+# Установка зависимостей через Poetry
+make install
+
+# Проверка линтера
+make lint
+
+# Запуск CLI
+poetry run project
