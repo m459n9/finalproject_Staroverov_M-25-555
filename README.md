@@ -70,3 +70,72 @@ make lint
 
 # Запуск CLI
 poetry run project
+```
+
+## Примеры использования CLI
+
+### Регистрация и вход
+
+```bash
+poetry run project register --username maksim --password 1234
+poetry run project login --username maksim --password 1234
+```
+
+### Просмотр портфеля
+
+```bash
+poetry run project show-portfolio
+
+# Пример вывода:
+# Портфель пользователя 'maksim' (база: USD):
+# +----------+------------+------------+
+# | Currency |  Balance   | Rate → USD |
+# +----------+------------+------------+
+# |   USD    |  9457.59   |     1      |
+# |   BTC    | 0.00500000 |  108399.0  |
+# +----------+------------+------------+
+# ---------------------------------
+# ИТОГО: 9 999.59 USD
+```
+
+### Купить или продать валюту
+
+``` bash
+poetry run project buy --currency BTC --amount 0.01
+poetry run project sell --currency BTC --amount 0.003
+```
+
+### Обновить курс валют
+
+``` bash
+# Из CoinGecko
+poetry run project update-rates --source coingecko
+
+# Из ExchangeRate API
+export EXCHANGERATE_API_KEY="ваш_api_ключ"
+poetry run project update-rates --source exchangerate
+```
+
+### Получить курс валют
+
+``` bash
+poetry run project get-rate --from BTC --to USD
+
+# Пример вывода:
+# Курс BTC→USD: 108593.0 (обновлено: 2025-10-22T15:49:00Z)
+# Обратный курс USD→BTC: 0.0000092087
+```
+
+### Просмотр кэша курсов
+
+``` bash
+poetry run project show-rates --currency BTC
+
+# Пример:
+# Rates from cache (updated at 2025-10-22T15:49:00Z):
+# +---------+----------+----------------------+-----------+
+# |   PAIR  |   RATE   |      UPDATED_AT      |   SOURCE  |
+# +---------+----------+----------------------+-----------+
+# | BTC_USD | 108593.0 | 2025-10-22T15:49:00Z | CoinGecko |
+# +---------+----------+----------------------+-----------+
+```
